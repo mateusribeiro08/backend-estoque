@@ -4,10 +4,8 @@ const bodyParser = require('body-parser');
 const { Sequelize } = require('sequelize');
 const mysql2 = require('mysql2');
 const session = require('express-session');
-const cors = require('cors');
 
 const app = express();
-app.use(cors());
 app.use(express.json());
 app.use(bodyParser.json());
 const loginRouter = require('./routes/login');

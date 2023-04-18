@@ -1,45 +1,20 @@
 const express = require('express');
-const { Sequelize } = require('sequelize');
-const session = require('express-session');
+const router = express.Router();
+const User = require('../models/User');
 
-const app = express();
-
-app.use(express.json());
-app.use(session({
-  secret: 'mySecretKey',
-  resave: false,
-  saveUninitialized: false
-}));
-
-const sequelize = new Sequelize({
-  dialect: 'sqlite',
-  storage: './database.sqlite',
-  define: {
-    timestamps: false
-  }
-});
-
-(async () => {
+router.post('/login', async (req, res) => {
   try {
-    await sequelize.authenticate();
-    console.log('Conexão estabelecida com sucesso!');
+    const { email, senha } = req.body;
+    const user = await User.findOne({ where: { email } });
+    if (!user || user.senha !== senha) {
+      return res.status(401).json({ error: 'Credenciais inválidas.' });
+    }
+    console.log(`Usuário logado: ${user.nome}, ${user.email}`);
+    res.json({ success: true });
   } catch (error) {
-    console.error('Não foi possível conectar ao banco de dados:', error);
-  }
-})();
-
-app.post('/login', async (req, res) => {
-  const { email, senha } = req.body;
-  const usuario = await sequelize.models.Usuario.findOne({ where: { email, senha } });
-  if (usuario) {
-    req.session.usuario = usuario;
-    res.json(usuario);
-  } else {
-    res.status(401).json({ mensagem: 'Email ou senha incorretos.' });
+    console.error(error);
+    res.status(500).json({ error: 'Não foi possível fazer o login.' });
   }
 });
 
-const port = process.env.PORT || 3500;
-app.listen(port, () => {
-  console.log(`Servidor rodando na porta ${port}.`);
-});
+module.exports = router;
