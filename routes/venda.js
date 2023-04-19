@@ -11,7 +11,7 @@ router.post('/venda', async (req, res) => {
 
     // Cria uma nova venda
     const venda = await Venda.create({
-      id_usuario:  req.session.userId, // Substitua pelo id do usuário logado
+      id_usuario: 1, // Substitua pelo id do usuário logado
       data_venda: new Date(),
       total,
       tipo_pagamento: tipoPagamento

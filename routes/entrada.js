@@ -11,7 +11,7 @@ router.post('/entrada', async (req, res) => {
 
     // Cria a nova compra
     const compra = await Compra.create({
-      id_usuario: req.session.userId, // usa o ID do usuário armazenado na sessão
+      id_usuario: 1, // usa o ID do usuário armazenado na sessão
       data_compra: new Date(),
       total
     });
